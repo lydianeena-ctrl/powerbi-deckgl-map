@@ -30,6 +30,13 @@ import {
   scatterSymbolItems,
 } from "./scatterSymbols";
 import {
+  defaultScatterRadiusMode,
+  defaultScatterSizeScaleType,
+  getScatterRadiusMode,
+  scatterRadiusModeItems,
+  scatterSizeScaleTypeItems,
+} from "./scatterSize";
+import {
   basemapOptions,
   DEFAULT_BASEMAP_ID,
   isAerialBasemap,
@@ -97,9 +104,9 @@ export class HighlightingCardSettings extends FormattingSettingsCard {
 
   highlightOpacity = new formattingSettings.Slider({
     name: "highlightOpacity",
-    displayName: "Highlight opacity",
+    displayName: "Highlight opacity (%)",
     description: "Opacity used for selected objects",
-    value: 100,
+    value: 39,
     options: {
       minValue: {
         type: powerbi.visuals.ValidatorType.Min,
@@ -107,7 +114,7 @@ export class HighlightingCardSettings extends FormattingSettingsCard {
       },
       maxValue: {
         type: powerbi.visuals.ValidatorType.Max,
-        value: 255,
+        value: 100,
       },
     },
   });
@@ -146,9 +153,9 @@ export class HighlightingCardSettings extends FormattingSettingsCard {
 
   autoHighlightOpacity = new formattingSettings.Slider({
     name: "autoHighlightOpacity",
-    displayName: "Highlight opacity on hover",
-    description: "Opacity of highlighted points/lines (0-255)",
-    value: 100,
+    displayName: "Highlight opacity on hover (%)",
+    description: "Opacity of highlighted points/lines",
+    value: 39,
     options: {
       minValue: {
         type: powerbi.visuals.ValidatorType.Min,
@@ -156,7 +163,7 @@ export class HighlightingCardSettings extends FormattingSettingsCard {
       },
       maxValue: {
         type: powerbi.visuals.ValidatorType.Max,
-        value: 255,
+        value: 100,
       },
     },
   });
@@ -241,9 +248,9 @@ export class BaseStrokeColorSettings extends FormattingSettingsCard {
 
   defaultLineOpacity = new formattingSettings.Slider({
     name: "defaultLineOpacity",
-    displayName: "Default line opacity",
+    displayName: "Default line opacity (%)",
     description: "Default opacity for lines if not specified in data",
-    value: 100,
+    value: 39,
     options: {
       minValue: {
         type: powerbi.visuals.ValidatorType.Min,
@@ -251,7 +258,7 @@ export class BaseStrokeColorSettings extends FormattingSettingsCard {
       },
       maxValue: {
         type: powerbi.visuals.ValidatorType.Max,
-        value: 255,
+        value: 100,
       },
     },
   });
@@ -280,9 +287,9 @@ export class BaseFillSettings extends FormattingSettingsCard {
 
   defaultFillOpacity = new formattingSettings.Slider({
     name: "defaultFillOpacity",
-    displayName: "Default fill opacity",
+    displayName: "Default fill opacity (%)",
     description: "Default opacity for fills if not specified in data",
-    value: 100,
+    value: 39,
     options: {
       minValue: {
         type: powerbi.visuals.ValidatorType.Min,
@@ -290,7 +297,7 @@ export class BaseFillSettings extends FormattingSettingsCard {
       },
       maxValue: {
         type: powerbi.visuals.ValidatorType.Max,
-        value: 255,
+        value: 100,
       },
     },
   });
@@ -573,11 +580,11 @@ export class LabelCardSettings extends FormattingSettingsCard {
 
   textOpacity = new formattingSettings.Slider({
     name: "textOpacity",
-    displayName: "Text opacity",
-    value: 255,
+    displayName: "Text opacity (%)",
+    value: 100,
     options: {
       minValue: { type: powerbi.visuals.ValidatorType.Min, value: 0 },
-      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 255 },
+      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 100 },
     },
   });
 
@@ -616,11 +623,11 @@ export class LabelCardSettings extends FormattingSettingsCard {
 
   boxFillOpacity = new formattingSettings.Slider({
     name: "boxFillOpacity",
-    displayName: "Box fill opacity",
-    value: 255,
+    displayName: "Box fill opacity (%)",
+    value: 100,
     options: {
       minValue: { type: powerbi.visuals.ValidatorType.Min, value: 0 },
-      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 255 },
+      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 100 },
     },
   });
 
@@ -646,11 +653,11 @@ export class LabelCardSettings extends FormattingSettingsCard {
 
   borderOpacity = new formattingSettings.Slider({
     name: "borderOpacity",
-    displayName: "Box border opacity",
-    value: 255,
+    displayName: "Box border opacity (%)",
+    value: 100,
     options: {
       minValue: { type: powerbi.visuals.ValidatorType.Min, value: 0 },
-      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 255 },
+      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 100 },
     },
   });
 
@@ -675,11 +682,11 @@ export class LabelCardSettings extends FormattingSettingsCard {
 
   shadowOpacity = new formattingSettings.Slider({
     name: "shadowOpacity",
-    displayName: "Shadow opacity",
-    value: 120,
+    displayName: "Shadow opacity (%)",
+    value: 47,
     options: {
       minValue: { type: powerbi.visuals.ValidatorType.Min, value: 0 },
-      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 255 },
+      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 100 },
     },
   });
 
@@ -718,11 +725,11 @@ export class LabelCardSettings extends FormattingSettingsCard {
 
   glowOpacity = new formattingSettings.Slider({
     name: "glowOpacity",
-    displayName: "Glow opacity",
-    value: 160,
+    displayName: "Glow opacity (%)",
+    value: 63,
     options: {
       minValue: { type: powerbi.visuals.ValidatorType.Min, value: 0 },
-      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 255 },
+      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 100 },
     },
   });
 
@@ -919,6 +926,53 @@ export class ScatterCardSettings extends FormattingSettingsCard {
     },
   });
 
+  radiusMode = new formattingSettings.ItemDropdown({
+    name: "radiusMode",
+    displayName: "Radius mode",
+    description:
+      "Metres: the Scatter radius field is a ground distance in metres. Scale to size range: the field's values are rescaled to the min/max size in pixels, like a bubble map",
+    value: {
+      value: defaultScatterRadiusMode,
+      displayName: scatterRadiusModeItems[0].displayName,
+    },
+    items: scatterRadiusModeItems,
+  });
+
+  sizeScaleType = new formattingSettings.ItemDropdown({
+    name: "sizeScaleType",
+    displayName: "Size scale",
+    description:
+      "Area: circle area is proportional to the value (recommended). Linear: circle radius is proportional to the value",
+    value: {
+      value: defaultScatterSizeScaleType,
+      displayName: scatterSizeScaleTypeItems[0].displayName,
+    },
+    items: scatterSizeScaleTypeItems,
+  });
+
+  sizeMinPixels = new formattingSettings.NumUpDown({
+    name: "sizeMinPixels",
+    displayName: "Min size (pixels)",
+    description:
+      "Radius in pixels for the smallest Scatter radius value (and for rows with no value)",
+    value: 3,
+    options: {
+      minValue: { type: powerbi.visuals.ValidatorType.Min, value: 0 },
+      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 200 },
+    },
+  });
+
+  sizeMaxPixels = new formattingSettings.NumUpDown({
+    name: "sizeMaxPixels",
+    displayName: "Max size (pixels)",
+    description: "Radius in pixels for the largest Scatter radius value",
+    value: 30,
+    options: {
+      minValue: { type: powerbi.visuals.ValidatorType.Min, value: 0 },
+      maxValue: { type: powerbi.visuals.ValidatorType.Max, value: 200 },
+    },
+  });
+
   defaultRadius = new formattingSettings.NumUpDown({
     name: "defaultRadius",
     displayName: "Default radius (m)",
@@ -950,11 +1004,25 @@ export class ScatterCardSettings extends FormattingSettingsCard {
     value: true,
   });
 
+  applyRadiusModeVisibility(): void {
+    const scaled = getScatterRadiusMode(this.radiusMode.value) === "scale";
+    this.sizeScaleType.visible = scaled;
+    this.sizeMinPixels.visible = scaled;
+    this.sizeMaxPixels.visible = scaled;
+    this.defaultRadius.visible = !scaled;
+    this.radiusMinPixels.visible = !scaled;
+    this.radiusMaxPixels.visible = !scaled;
+  }
+
   name: string = "scatterProps";
   displayName: string = "Scatter properties";
   slices: Array<FormattingSettingsSlice> = [
     this.layerType,
     this.symbolType,
+    this.radiusMode,
+    this.sizeScaleType,
+    this.sizeMinPixels,
+    this.sizeMaxPixels,
     this.defaultRadius,
     this.radiusMinPixels,
     this.radiusMaxPixels,
@@ -1021,9 +1089,9 @@ export class HeatmapCardSettings extends FormattingSettingsCard {
 
   opacity = new formattingSettings.Slider({
     name: "opacity",
-    displayName: "Opacity",
-    description: "Opacity of heatmap colors (0-255)",
-    value: 180,
+    displayName: "Opacity (%)",
+    description: "Opacity of heatmap colors",
+    value: 71,
     options: {
       minValue: {
         type: powerbi.visuals.ValidatorType.Min,
@@ -1031,7 +1099,7 @@ export class HeatmapCardSettings extends FormattingSettingsCard {
       },
       maxValue: {
         type: powerbi.visuals.ValidatorType.Max,
-        value: 255,
+        value: 100,
       },
     },
   });
@@ -1123,10 +1191,10 @@ export class H3HexagonCardSettings extends FormattingSettingsCard {
 
   lowFillOpacity = new formattingSettings.Slider({
     name: "lowFillOpacity",
-    displayName: "Low-count opacity",
+    displayName: "Low-count opacity (%)",
     description:
-      "Fill and outline opacity for the lowest H3 point-count class (0-255)",
-    value: 70,
+      "Fill and outline opacity for the lowest H3 point-count class",
+    value: 27,
     options: {
       minValue: {
         type: powerbi.visuals.ValidatorType.Min,
@@ -1134,17 +1202,17 @@ export class H3HexagonCardSettings extends FormattingSettingsCard {
       },
       maxValue: {
         type: powerbi.visuals.ValidatorType.Max,
-        value: 255,
+        value: 100,
       },
     },
   });
 
   highFillOpacity = new formattingSettings.Slider({
     name: "highFillOpacity",
-    displayName: "High-count opacity",
+    displayName: "High-count opacity (%)",
     description:
-      "Fill and outline opacity for the highest H3 point-count class (0-255)",
-    value: 210,
+      "Fill and outline opacity for the highest H3 point-count class",
+    value: 82,
     options: {
       minValue: {
         type: powerbi.visuals.ValidatorType.Min,
@@ -1152,7 +1220,7 @@ export class H3HexagonCardSettings extends FormattingSettingsCard {
       },
       maxValue: {
         type: powerbi.visuals.ValidatorType.Max,
-        value: 255,
+        value: 100,
       },
     },
   });
@@ -1258,9 +1326,9 @@ export class ArcCardSettings extends FormattingSettingsCard {
 
   defaultSourceOpacity = new formattingSettings.Slider({
     name: "defaultSourceOpacity",
-    displayName: "Default source opacity",
+    displayName: "Default source opacity (%)",
     description: "Default opacity for source color if not specified in data",
-    value: 100,
+    value: 39,
     options: {
       minValue: {
         type: powerbi.visuals.ValidatorType.Min,
@@ -1268,7 +1336,7 @@ export class ArcCardSettings extends FormattingSettingsCard {
       },
       maxValue: {
         type: powerbi.visuals.ValidatorType.Max,
-        value: 255,
+        value: 100,
       },
     },
   });
@@ -1282,9 +1350,9 @@ export class ArcCardSettings extends FormattingSettingsCard {
 
   defaultTargetOpacity = new formattingSettings.Slider({
     name: "defaultTargetOpacity",
-    displayName: "Default target opacity",
+    displayName: "Default target opacity (%)",
     description: "Default opacity for target color if not specified in data",
-    value: 100,
+    value: 39,
     options: {
       minValue: {
         type: powerbi.visuals.ValidatorType.Min,
@@ -1292,7 +1360,7 @@ export class ArcCardSettings extends FormattingSettingsCard {
       },
       maxValue: {
         type: powerbi.visuals.ValidatorType.Max,
-        value: 255,
+        value: 100,
       },
     },
   });
@@ -1555,10 +1623,27 @@ export class MapCardSettings extends FormattingSettingsCard {
     },
   });
 
+  zoomToCoordinates = new formattingSettings.ToggleSwitch({
+    name: "zoomToCoordinates",
+    displayName: "Zoom to coordinates",
+    description:
+      "Show the area set by the latitude and longitude fields below instead of fitting the map to the data. The map opens on it and returns to it on reset and, with Fly to on, when filters change",
+    value: false,
+  });
+
+  lockToCoordinates = new formattingSettings.ToggleSwitch({
+    name: "lockToCoordinates",
+    displayName: "Lock to coordinates",
+    description:
+      "Stop panning and zooming out beyond the area. The map always fills the visual, so if the area's shape differs from the visual's, part of it is cropped (you can still pan to it)",
+    value: false,
+  });
+
   initialSouth = new formattingSettings.NumUpDown({
     name: "initialSouth",
-    displayName: "Initial southern map latitude",
-    description: "The bottom of the map will be at this latitude",
+    displayName: "South latitude",
+    description:
+      "Bottom edge of the area for Zoom to coordinates (also the view used when there is no data)",
     value: -37.8496,
     options: {
       minValue: {
@@ -1574,8 +1659,9 @@ export class MapCardSettings extends FormattingSettingsCard {
 
   initialWest = new formattingSettings.NumUpDown({
     name: "initialWest",
-    displayName: "Initial western map longitude",
-    description: "The left of the map will be at this longitude",
+    displayName: "West longitude",
+    description:
+      "Left edge of the area for Zoom to coordinates (also the view used when there is no data)",
     value: 175.1771,
     options: {
       minValue: {
@@ -1591,8 +1677,9 @@ export class MapCardSettings extends FormattingSettingsCard {
 
   initialNorth = new formattingSettings.NumUpDown({
     name: "initialNorth",
-    displayName: "Initial northern map latitude",
-    description: "The top of the map will be at this latitude",
+    displayName: "North latitude",
+    description:
+      "Top edge of the area for Zoom to coordinates (also the view used when there is no data)",
     value: -37.6735,
     options: {
       minValue: {
@@ -1608,8 +1695,9 @@ export class MapCardSettings extends FormattingSettingsCard {
 
   initialEast = new formattingSettings.NumUpDown({
     name: "initialEast",
-    displayName: "Initial eastern map longitude",
-    description: "The right of the map will be at this longitude",
+    displayName: "East longitude",
+    description:
+      "Right edge of the area for Zoom to coordinates (also the view used when there is no data)",
     value: 175.3555,
     options: {
       minValue: {
@@ -1674,6 +1762,8 @@ export class MapCardSettings extends FormattingSettingsCard {
     this.aerialBasemapOpacity,
     this.show3DBuildings,
     this.buildingsMinZoom,
+    this.zoomToCoordinates,
+    this.lockToCoordinates,
     this.initialSouth,
     this.initialWest,
     this.initialNorth,
@@ -1688,6 +1778,7 @@ export class MapCardSettings extends FormattingSettingsCard {
     this.mapboxAccessToken.visible = isMapboxSatelliteBasemap(baseMap);
     this.cartoApiKey.visible = resolveBasemap(baseMap).kind === "carto-raster";
     this.aerialBasemapOpacity.visible = isAerialBasemap(baseMap);
+    this.lockToCoordinates.visible = this.zoomToCoordinates.value === true;
   }
 }
 
@@ -2030,6 +2121,7 @@ export class VisualFormattingSettingsModel extends FormattingSettingsModel {
   applyConditionalVisibility(): void {
     this.map.applyBasemapVisibility();
     this.labels.applyConditionalVisibility();
+    this.scatter.applyRadiusModeVisibility();
 
     for (const card of this.cards) {
       for (const value of Object.values(card)) {
